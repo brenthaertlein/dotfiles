@@ -1,0 +1,8 @@
+.DS_Store
+*.swp
+*.swo
+*~
+.vim/
+node_modules/
+__pycache__/
+.claude/

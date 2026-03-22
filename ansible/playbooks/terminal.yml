@@ -1,0 +1,14 @@
+
+---
+- hosts: local
+  gather_facts: yes
+
+  tasks:
+    - name: Determine repo root
+      set_fact:
+        dotfiles_root: "{{ playbook_dir | dirname | dirname }}"
+
+    - name: Stow dotfiles
+      command: "./stow.sh"
+      args:
+        chdir: "{{ dotfiles_root }}"
