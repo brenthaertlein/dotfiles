@@ -12,10 +12,11 @@ cd ~/dotfiles
 
 Then manually:
 
-1. Set terminal font to **MesloLGS Nerd Font** (iTerm2: Preferences → Profiles → Text → Font)
-2. Open vim → `:PlugInstall`
-3. Open tmux → `prefix + I` to install plugins
-4. Authenticate cloud CLIs (`aws configure`, `gcloud auth login`)
+1. Set terminal font to **MesloLGS Nerd Font** (iTerm2: Settings → Profiles → Text → Font)
+2. Install [Catppuccin Mocha for iTerm2](https://github.com/catppuccin/iterm) — import the `.itermcolors` file, then set it in Settings → Profiles → Colors → Color Presets
+3. Open vim → `:PlugInstall`
+4. Open tmux → `prefix + I` to install plugins
+5. Authenticate cloud CLIs (`aws configure`, `gcloud auth login`)
 
 ## What's Included
 
@@ -35,7 +36,7 @@ Each directory is a [stow package](docs/stow.md) — symlinked into `$HOME` via 
 | Category | Packages |
 |---|---|
 | **Shell & TUI** | tmux, starship, fzf, ripgrep, bat, zoxide, eza, tree, jq |
-| **System** | curl, wget, stow |
+| **System** | curl, wget, stow, btop, fastfetch, mtr |
 | **Development** | git, gh, python, node (via n) |
 | **Cloud & Infra** | awscli, kubectl, k9s, helm, terraform, ansible |
 | **Casks** | font-meslo-lg-nerd-font, iTerm2, OrbStack |
