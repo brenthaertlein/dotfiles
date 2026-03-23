@@ -6,6 +6,8 @@ set ignorecase smartcase
 set incsearch hlsearch
 set mouse=a
 set termguicolors
+set regexpengine=0
+set redrawtime=10000
 syntax on
 set background=dark
 
