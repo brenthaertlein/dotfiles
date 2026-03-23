@@ -35,7 +35,7 @@ Each directory is a [stow package](docs/stow.md) — symlinked into `$HOME` via 
 
 | Category | Packages |
 |---|---|
-| **Shell & TUI** | tmux, starship, fzf, ripgrep, bat, zoxide, eza, tree, jq |
+| **Shell & TUI** | tmux, starship, fzf, fzf-tab, ripgrep, bat, zoxide, eza, tree, jq |
 | **System** | curl, wget, stow, btop, fastfetch, mtr |
 | **Development** | git, gh, python, node (via n) |
 | **Cloud & Infra** | awscli, kubectl, k9s, helm, terraform, ansible |

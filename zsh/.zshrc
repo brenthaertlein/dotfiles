@@ -2,15 +2,23 @@
 export EDITOR=vim
 export VISUAL=vim
 autoload -Uz compinit && compinit
-setopt AUTO_CD CORRECT MENU_COMPLETE INTERACTIVE_COMMENTS
+setopt AUTO_CD CORRECT MENU_COMPLETE INTERACTIVE_COMMENTS NO_BEEP NO_LIST_BEEP
 bindkey -e
 
 eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
 
-# fzf
+# fzf-tab (must come after compinit, before other plugins)
+for p in /opt/homebrew/opt/fzf-tab/share/fzf-tab/fzf-tab.zsh /usr/share/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh; do
+  [[ -f $p ]] && source $p
+done
+zstyle ':fzf-tab:*' fzf-flags '--bind=esc:abort'
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --icons --color=always $realpath'
+zstyle ':fzf-tab:complete:*:*' fzf-preview 'bat --color=always --style=numbers --line-range=:50 $realpath 2>/dev/null || eza -1 --icons --color=always $realpath 2>/dev/null'
+
+# fzf key-bindings only (Ctrl+R history, Ctrl+T files, Alt+C dirs)
+# fzf-tab handles tab completion — do not source fzf's completion.zsh
 [ -f /opt/homebrew/opt/fzf/shell/key-bindings.zsh ] && source /opt/homebrew/opt/fzf/shell/key-bindings.zsh
-[ -f /opt/homebrew/opt/fzf/shell/completion.zsh ] && source /opt/homebrew/opt/fzf/shell/completion.zsh
 
 # autosuggestions
 for p in /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh; do
