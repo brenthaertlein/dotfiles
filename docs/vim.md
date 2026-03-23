@@ -19,6 +19,8 @@ Vim is configured as a comfortable editing environment — not a full IDE, but e
 | Search | `ignorecase smartcase` | Case-insensitive unless you type uppercase |
 | Mouse | Enabled | Click to position cursor, scroll |
 | True color | `termguicolors` | Full color theme support in modern terminals |
+| Regex engine | `regexpengine=0` | Auto-select engine to prevent syntax highlighting timeout |
+| Redraw time | `redrawtime=10000` | Longer timeout before disabling syntax highlighting on large files |
 
 ### Plugins (via vim-plug)
 

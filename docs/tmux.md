@@ -34,7 +34,7 @@ Default prefix is `Ctrl-b` (from tmux-sensible).
 - **True color** support (`tmux-256color` + `Tc` override)
 - **Base index 1** for windows and panes (no window 0)
 - **Dynamic titles** — `allow-rename on` lets programs set window names
-- **Clipboard** — `pbcopy` integration (macOS-only, tracked for cross-platform fix in Phase 1)
+- **Clipboard** — cross-platform via tmux-yank plugin
 
 ### Plugins (via TPM)
 
@@ -42,6 +42,9 @@ Default prefix is `Ctrl-b` (from tmux-sensible).
 |---|---|
 | [tpm](https://github.com/tmux-plugins/tpm) | Tmux Plugin Manager |
 | [tmux-sensible](https://github.com/tmux-plugins/tmux-sensible) | Sensible defaults (larger history, better key bindings) |
+| [tmux-resurrect](https://github.com/tmux-plugins/tmux-resurrect) | Save and restore tmux sessions across restarts |
+| [tmux-continuum](https://github.com/tmux-plugins/tmux-continuum) | Auto-save sessions every 15 min, auto-restore on tmux start |
+| [tmux-yank](https://github.com/tmux-plugins/tmux-yank) | Cross-platform clipboard support (replaces hardcoded pbcopy) |
 | [catppuccin/tmux](https://github.com/catppuccin/tmux) | Catppuccin theme with status modules |
 
 **Installing plugins:** Open tmux, press `prefix + I`. TPM clones plugins to `~/.tmux/plugins/`.
