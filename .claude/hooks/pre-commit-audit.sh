@@ -71,6 +71,14 @@ check "BLOCK" "Private key material found" "$result"
 result=$(echo "$ALL_FILES" | xargs grep -rniE '(password|passwd|token|secret)\s*[=:]\s*["\x27][^\s]+' 2>/dev/null | grep -v '.claude/' || true)
 check "BLOCK" "Hardcoded credential assignments found" "$result"
 
+# PII: Credit card numbers (Visa, Mastercard, Amex, Discover)
+result=$(echo "$ALL_FILES" | xargs grep -rnE '\b4[0-9]{12}([0-9]{3})?\b|\b5[1-5][0-9]{14}\b|\b3[47][0-9]{13}\b|\b6(?:011|5[0-9]{2})[0-9]{12}\b' 2>/dev/null | grep -v '.claude/' || true)
+check "BLOCK" "Credit card number patterns found" "$result"
+
+# PII: Social Security Numbers (XXX-XX-XXXX and XXXXXXXXX)
+result=$(echo "$ALL_FILES" | xargs grep -rnE '\b[0-9]{3}-[0-9]{2}-[0-9]{4}\b|\b[0-9]{9}\b' 2>/dev/null | grep -v '.claude/' || true)
+check "BLOCK" "Social Security Number patterns found" "$result"
+
 # Infrastructure: Real IP addresses (not 127.0.0.1 or 0.0.0.0)
 result=$(echo "$ALL_FILES" | xargs grep -rnE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' 2>/dev/null | grep -v '.claude/' | grep -v '127\.0\.0\.1' | grep -v '0\.0\.0\.0' || true)
 check "WARN" "IP addresses found (verify these are not internal)" "$result"

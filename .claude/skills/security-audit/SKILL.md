@@ -15,6 +15,8 @@ Search all tracked files for:
 - Usernames and home directory paths (`/Users/`, `/home/`)
 - Email addresses (any `@` pattern in non-URL context)
 - Real names in unexpected places (expected only in git commit metadata, not in config files)
+- Credit card numbers (Visa, Mastercard, Amex, Discover patterns)
+- Social Security Numbers (`XXX-XX-XXXX` and 9-digit variants)
 
 ### 2. Secrets Scan
 Search all tracked files for:
