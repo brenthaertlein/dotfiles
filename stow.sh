@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-modules=(zsh starship tmux vim)
+modules=(zsh starship tmux vim cw)
 for m in "${modules[@]}"; do stow --target="$HOME" "$m"; done

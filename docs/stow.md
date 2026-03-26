@@ -28,6 +28,7 @@ Deployed by `stow.sh`:
 | `vim` | `~/.vimrc` |
 | `tmux` | `~/.tmux.conf` |
 | `starship` | `~/.config/starship.toml` |
+| `cw` | `~/.zshrc.d/cw.zsh` |
 
 ## Common Operations
 
