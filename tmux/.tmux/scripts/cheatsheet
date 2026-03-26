@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+# tmux cheatsheet picker — browse with fzf, execute selected command
+set -euo pipefail
+
+CHEATSHEET="$HOME/.tmux/cheatsheet.md"
+
+if [[ ! -f "$CHEATSHEET" ]]; then
+    echo "Cheatsheet not found: $CHEATSHEET" >&2
+    exit 1
+fi
+
+# Parse markdown tables into tab-delimited: section\tbinding\taction\tcommand
+entries=$(awk -F'|' '
+    /^## / { section = substr($0, 4) }
+    /^\|.*\|.*\|.*\|/ && !/^[| -]+$/ && !/Binding/ {
+        binding = $2; action = $3; command = $4
+        gsub(/^[ \t`]+|[ \t`]+$/, "", binding)
+        gsub(/^[ \t]+|[ \t]+$/, "", action)
+        gsub(/^[ \t]+|[ \t]+$/, "", command)
+        if (binding != "" && action != "")
+            printf "%s\t%s\t%s\t%s\n", section, binding, action, command
+    }
+' "$CHEATSHEET")
+
+# Format for fzf: section headers above their entries, no blank lines
+display=$(echo "$entries" | awk -F'\t' '
+    {
+        if ($1 != prev) {
+            printf "\033[1;35m── %s ──\033[0m\n", $1
+            prev = $1
+        }
+        runnable = ($4 != "") ? " \033[1;31m*\033[0m" : "  "
+        printf "  \033[1;36m%-18s\033[0m %s%s\n", $2, $3, runnable
+    }
+')
+
+# Word-wrap helper: wraps text at word boundaries to fit a given width
+# Usage: wordwrap <width> <text>
+wordwrap() {
+    local width=$1
+    shift
+    echo "$@" | fold -s -w "$width"
+}
+
+selected=$(echo "$display" | fzf \
+    --ansi \
+    --layout=reverse \
+    --header=$'Enter = execute  |  Esc = close  |  \x1b[1;31m*\x1b[0m = executable' \
+    --preview='
+        line={}
+        clean=$(echo "$line" | sed "s/\x1b\[[0-9;]*m//g" | xargs)
+        # Skip section headers
+        case "$clean" in ──*) echo "$clean"; exit 0 ;; esac
+        # Extract binding (first 1-3 words: "prefix + X" or "Ctrl-x")
+        bind=$(echo "$clean" | sed "s/ \*$//" | awk "{if (\$1==\"prefix\") print \$1,\$2,\$3; else print \$1}")
+        # Get preview width (fzf sets $FZF_PREVIEW_COLUMNS)
+        pw=${FZF_PREVIEW_COLUMNS:-40}
+        # Look up in cheatsheet
+        awk -F"|" -v b="$bind" -v pw="$pw" "
+            /^## / { section=substr(\$0,4) }
+            /^\|.*\|.*\|.*\|/ && !/^[| -]+$/ && !/Binding/ {
+                gsub(/^[ \t\x60]+|[ \t\x60]+$/, \"\", \$2)
+                if (\$2 == b) {
+                    gsub(/^[ \t]+|[ \t]+$/, \"\", \$3)
+                    gsub(/^[ \t]+|[ \t]+$/, \"\", \$4)
+                    print section
+                    print \"\"
+                    print \"  \" \$3
+                    print \"\"
+                    if (\$4 != \"\") {
+                        printf \"  tmux %s\n\", \$4
+                        print \"\"
+                        print \"  \033[1;31m*\033[0m executable\"
+                    } else {
+                        print \"  keybind only\"
+                    }
+                }
+            }
+        " '"$CHEATSHEET"' | while IFS= read -r pline; do
+            stripped=$(echo "$pline" | sed "s/\x1b\[[0-9;]*m//g")
+            if [ ${#stripped} -gt "$pw" ]; then
+                echo "$pline" | fold -s -w "$pw"
+            else
+                echo "$pline"
+            fi
+        done
+    ' \
+    --preview-window=right:40%:wrap \
+    --no-sort \
+    --prompt="tmux> ")
+
+# Strip ANSI codes
+clean=$(echo "$selected" | sed 's/\x1b\[[0-9;]*m//g' | xargs)
+
+# Skip section headers and empty selections
+[[ -z "$clean" || "$clean" == ──* ]] && exit 0
+
+# Extract binding
+binding=$(echo "$clean" | sed 's/ \*$//' | awk '{
+    if ($1 == "prefix") { print $1, $2, $3 }
+    else { print $1 }
+}')
+
+# Look up the tmux command
+cmd=$(echo "$entries" | awk -F'\t' -v bind="$binding" '
+    $2 == bind { print $4; exit }
+')
+
+[[ -z "$cmd" ]] && exit 0
+
+tmux $cmd

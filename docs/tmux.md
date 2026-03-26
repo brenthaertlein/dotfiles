@@ -18,12 +18,20 @@
 
 Default prefix is `Ctrl-b` (from tmux-sensible).
 
+For the full list, press `prefix + h` inside tmux to open the interactive cheatsheet (fzf picker — select a command to execute it). Source: [`tmux/.tmux/cheatsheet.md`](../tmux/.tmux/cheatsheet.md).
+
 | Binding | Action |
 |---|---|
+| `prefix + h` | Open cheatsheet — browse and execute commands via fzf |
+| `prefix + O` | Open SessionX — fuzzy session switcher (fzf popup) |
 | `prefix + \|` | Split pane horizontally |
 | `prefix + -` | Split pane vertically |
-| `prefix + r` | Reload config |
+| `prefix + j` | Move a pane into another window (interactive picker) |
+| `prefix + B` | Break current pane into its own window |
+| `prefix + S` | Send current window to a new session (prompts for name) |
+| `prefix + L` | Switch to last session |
 | `Ctrl-x` | Toggle pane broadcast (type in all panes simultaneously) |
+| `prefix + r` | Reload config |
 | `prefix + I` | Install TPM plugins |
 | `prefix + U` | Update TPM plugins |
 
@@ -45,6 +53,7 @@ Default prefix is `Ctrl-b` (from tmux-sensible).
 | [tmux-resurrect](https://github.com/tmux-plugins/tmux-resurrect) | Save and restore tmux sessions across restarts |
 | [tmux-continuum](https://github.com/tmux-plugins/tmux-continuum) | Auto-save sessions every 15 min, auto-restore on tmux start |
 | [tmux-yank](https://github.com/tmux-plugins/tmux-yank) | Cross-platform clipboard support (replaces hardcoded pbcopy) |
+| [tmux-sessionx](https://github.com/omerxx/tmux-sessionx) | Fuzzy session manager — switch, create, rename, delete sessions via fzf popup |
 | [catppuccin/tmux](https://github.com/catppuccin/tmux) | Catppuccin theme with status modules |
 
 **Installing plugins:** Open tmux, press `prefix + I`. TPM clones plugins to `~/.tmux/plugins/`.
