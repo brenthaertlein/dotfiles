@@ -37,6 +37,7 @@ fi
 alias ls='eza --icons --group-directories-first'
 alias cat='bat'
 alias k='kubectl'
+[ -x /Applications/Tailscale.app/Contents/MacOS/Tailscale ] && alias tailscale='/Applications/Tailscale.app/Contents/MacOS/Tailscale'
 export PATH="$HOME/.local/bin:$PATH"
 
 # Google Cloud SDK
