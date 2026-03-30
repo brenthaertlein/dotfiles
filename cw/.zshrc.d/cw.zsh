@@ -2,16 +2,59 @@ cw() {
   local repo
   repo=$(git rev-parse --show-toplevel 2>/dev/null) || { echo "Not in a git repo"; return 1; }
 
-  local clean=false force=false branch=""
+  local clean=false force=false remove=false branch=""
   while [ $# -gt 0 ]; do
     case "$1" in
       --clean) clean=true ;;
+      --remove) remove=true ;;
       --force|-f) force=true ;;
       -*) echo "Unknown option: $1"; return 1 ;;
       *) branch="$1" ;;
     esac
     shift
   done
+
+  if $remove; then
+    if [ -z "$branch" ]; then
+      case "$PWD" in
+        "$repo"/.worktrees/*)
+          branch="${PWD#$repo/.worktrees/}"
+          branch="${branch%%/*}"
+          ;;
+        *)
+          echo "Not inside a worktree — specify a branch name: cw --remove <branch>"
+          return 1
+          ;;
+      esac
+    fi
+    local wt="$repo/.worktrees/$branch"
+    if [ ! -d "$wt" ]; then
+      echo "No worktree found for branch: $branch"
+      return 1
+    fi
+    if ! $force; then
+      if [ -n "$(git -C "$wt" status --porcelain 2>/dev/null)" ]; then
+        echo "Worktree '$branch' has uncommitted changes — use --force to remove anyway"
+        return 1
+      fi
+      local upstream
+      upstream=$(git -C "$wt" rev-parse --abbrev-ref '@{upstream}' 2>/dev/null)
+      if [ -n "$upstream" ] && [ -n "$(git -C "$wt" log "$upstream..HEAD" 2>/dev/null)" ]; then
+        echo "Worktree '$branch' has unpushed commits — use --force to remove anyway"
+        return 1
+      fi
+    fi
+    if [ "${PWD#$wt}" != "$PWD" ]; then
+      cd "$repo" || return 1
+    fi
+    local force_flag=""
+    $force && force_flag="--force"
+    git -C "$repo" worktree remove $force_flag "$wt"
+    git -C "$repo" branch -D "$branch" 2>/dev/null
+    git -C "$repo" worktree prune
+    echo "Removed worktree and branch: $branch"
+    return
+  fi
 
   if $clean; then
     local force_flag=""
