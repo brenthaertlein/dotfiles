@@ -24,19 +24,9 @@ sudo apt-get install -y \
   ansible \
   zsh-autosuggestions \
   zsh-syntax-highlighting \
-  build-essential \
-  libssl-dev \
-  zlib1g-dev \
-  libbz2-dev \
-  libreadline-dev \
-  libsqlite3-dev \
-  libncursesw5-dev \
-  xz-utils \
-  tk-dev \
-  libxml2-dev \
-  libxmlsec1-dev \
-  libffi-dev \
-  liblzma-dev \
+  python3 \
+  python3-pip \
+  python3-venv \
   unzip
 
 # bat is installed as 'batcat' on Ubuntu — symlink to expected name
@@ -61,6 +51,12 @@ if ! command -v eza >/dev/null; then
   echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list >/dev/null
   sudo apt-get update
   sudo apt-get install -y eza
+fi
+
+# Node.js (prebuilt via NodeSource)
+if ! command -v node >/dev/null; then
+  curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+  sudo apt-get install -y nodejs
 fi
 
 echo "==> Installing tools via direct install..."
