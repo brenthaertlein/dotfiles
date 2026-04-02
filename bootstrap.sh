@@ -13,8 +13,7 @@ else
   exit 1
 fi
 
-cd "$DOTFILES_ROOT/ansible"
-ansible-playbook -i inventory/local.ini playbooks/terminal.yml
+"$DOTFILES_ROOT/stow.sh"
 
 # ── plugin installs (headless, after stow so configs are in place) ───────────
 

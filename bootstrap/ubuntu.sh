@@ -126,8 +126,8 @@ if [ -f "$TOOL_VERSIONS" ]; then
   while IFS=' ' read -r plugin version; do
     [[ -z "$plugin" || "$plugin" == \#* ]] && continue
     asdf plugin add "$plugin" 2>/dev/null || true
-    asdf install "$plugin" "$version"
-    asdf set --home "$plugin" "$version"
+    asdf install "$plugin" "$version" || true
+    asdf set --home "$plugin" "$version" || true
   done < "$TOOL_VERSIONS"
 fi
 
