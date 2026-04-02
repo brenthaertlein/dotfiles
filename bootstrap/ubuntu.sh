@@ -110,19 +110,24 @@ fi
 
 echo "==> Installing asdf..."
 
-if [ ! -d "$HOME/.asdf" ]; then
-  git clone https://github.com/asdf-vm/asdf.git "$HOME/.asdf" --branch v0.16.7
+# asdf 0.16+ is a Go binary, not a bash script
+if ! command -v asdf >/dev/null; then
+  ASDF_VERSION=$(curl -fsSL https://api.github.com/repos/asdf-vm/asdf/releases/latest | jq -r .tag_name)
+  curl -fsSL "https://github.com/asdf-vm/asdf/releases/download/${ASDF_VERSION}/asdf-${ASDF_VERSION#v}-linux-amd64.tar.gz" -o /tmp/asdf.tar.gz
+  tar -xzf /tmp/asdf.tar.gz -C "$LOCAL_BIN"
+  rm /tmp/asdf.tar.gz
 fi
 
-source "$HOME/.asdf/asdf.sh"
+export PATH="$LOCAL_BIN:$PATH"
 
-# Install asdf plugins and versions from .tool-versions
+# Install asdf plugins and versions from .tool-versions, set as global defaults
 TOOL_VERSIONS="$DOTFILES_ROOT/.tool-versions"
 if [ -f "$TOOL_VERSIONS" ]; then
   while IFS=' ' read -r plugin version; do
     [[ -z "$plugin" || "$plugin" == \#* ]] && continue
     asdf plugin add "$plugin" 2>/dev/null || true
     asdf install "$plugin" "$version"
+    asdf set --home "$plugin" "$version"
   done < "$TOOL_VERSIONS"
 fi
 

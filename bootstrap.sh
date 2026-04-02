@@ -15,3 +15,15 @@ fi
 
 cd "$DOTFILES_ROOT/ansible"
 ansible-playbook -i inventory/local.ini playbooks/terminal.yml
+
+# ── plugin installs (headless, after stow so configs are in place) ───────────
+
+# tmux: clone TPM + install plugins
+TPM_DIR="$HOME/.tmux/plugins/tpm"
+if [ ! -d "$TPM_DIR" ]; then
+  git clone https://github.com/tmux-plugins/tpm "$TPM_DIR"
+fi
+"$TPM_DIR/bin/install_plugins"
+
+# vim: install plugins headless
+vim +PlugInstall +qall

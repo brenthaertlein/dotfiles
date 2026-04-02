@@ -1,11 +1,11 @@
 
 export EDITOR=vim
 export VISUAL=vim
+export PATH="$HOME/.local/bin:$PATH"
 
-# asdf version manager (must be before compinit for completions)
-if [ -f "$HOME/.asdf/asdf.sh" ]; then
-  source "$HOME/.asdf/asdf.sh"
-  fpath=(${ASDF_DIR}/completions $fpath)
+# asdf version manager completions
+if command -v asdf >/dev/null; then
+  fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)
 fi
 
 autoload -Uz compinit && compinit
@@ -54,7 +54,6 @@ alias ls='eza --icons --group-directories-first'
 alias cat='bat'
 alias k='kubectl'
 [ -x /Applications/Tailscale.app/Contents/MacOS/Tailscale ] && alias tailscale='/Applications/Tailscale.app/Contents/MacOS/Tailscale'
-export PATH="$HOME/.local/bin:$PATH"
 
 # Google Cloud SDK
 if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/google-cloud-sdk/path.zsh.inc"; fi
