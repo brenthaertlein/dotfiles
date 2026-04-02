@@ -113,7 +113,7 @@ echo "==> Installing asdf..."
 # asdf 0.16+ is a Go binary, not a bash script
 if ! command -v asdf >/dev/null; then
   ASDF_VERSION=$(curl -fsSL https://api.github.com/repos/asdf-vm/asdf/releases/latest | jq -r .tag_name)
-  curl -fsSL "https://github.com/asdf-vm/asdf/releases/download/${ASDF_VERSION}/asdf-${ASDF_VERSION#v}-linux-amd64.tar.gz" -o /tmp/asdf.tar.gz
+  curl -fsSL "https://github.com/asdf-vm/asdf/releases/download/${ASDF_VERSION}/asdf-${ASDF_VERSION}-linux-amd64.tar.gz" -o /tmp/asdf.tar.gz
   tar -xzf /tmp/asdf.tar.gz -C "$LOCAL_BIN"
   rm /tmp/asdf.tar.gz
 fi
