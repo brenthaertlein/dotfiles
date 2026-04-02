@@ -94,13 +94,11 @@ if ! command -v k9s >/dev/null; then
   rm /tmp/k9s.tar.gz
 fi
 
-# AWS CLI (install to ~/.local)
-if ! command -v aws >/dev/null; then
-  curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o /tmp/awscliv2.zip
-  unzip -qo /tmp/awscliv2.zip -d /tmp
-  /tmp/aws/install --install-dir "$HOME/.local/aws-cli" --bin-dir "$LOCAL_BIN"
-  rm -rf /tmp/aws /tmp/awscliv2.zip
-fi
+# AWS CLI (install or update to ~/.local)
+curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o /tmp/awscliv2.zip
+unzip -qo /tmp/awscliv2.zip -d /tmp
+/tmp/aws/install --install-dir "$HOME/.local/aws-cli" --bin-dir "$LOCAL_BIN" --update
+rm -rf /tmp/aws /tmp/awscliv2.zip
 
 # fzf-tab (zsh plugin — no apt package)
 FZF_TAB_DIR="$HOME/.zsh/fzf-tab"
