@@ -26,4 +26,4 @@ fi
 "$TPM_DIR/bin/install_plugins"
 
 # vim: install plugins headless
-vim +PlugInstall +qall
+vim -es -u "$HOME/.vimrc" +PlugInstall +qall
