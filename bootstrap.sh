@@ -1,18 +1,17 @@
-
 #!/usr/bin/env bash
 set -e
 
+DOTFILES_ROOT="$(cd "$(dirname "$0")" && pwd)"
+
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  if ! command -v brew >/dev/null; then
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-  fi
+  "$DOTFILES_ROOT/bootstrap/macos.sh"
+  "$DOTFILES_ROOT/macos.sh" || true
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  "$DOTFILES_ROOT/bootstrap/ubuntu.sh"
+else
+  echo "Unsupported OS: $OSTYPE" >&2
+  exit 1
 fi
 
-brew bundle --file=Brewfile || true
-
-./macos.sh || true
-
-cd ansible
+cd "$DOTFILES_ROOT/ansible"
 ansible-playbook -i inventory/local.ini playbooks/terminal.yml

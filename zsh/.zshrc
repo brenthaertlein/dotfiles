@@ -1,6 +1,13 @@
 
 export EDITOR=vim
 export VISUAL=vim
+
+# asdf version manager (must be before compinit for completions)
+if [ -f "$HOME/.asdf/asdf.sh" ]; then
+  source "$HOME/.asdf/asdf.sh"
+  fpath=(${ASDF_DIR}/completions $fpath)
+fi
+
 autoload -Uz compinit && compinit
 setopt AUTO_CD CORRECT MENU_COMPLETE INTERACTIVE_COMMENTS NO_BEEP NO_LIST_BEEP
 bindkey -e
@@ -9,8 +16,10 @@ eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
 
 # fzf-tab (must come after compinit, before other plugins)
-for p in /opt/homebrew/opt/fzf-tab/share/fzf-tab/fzf-tab.zsh /usr/share/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh; do
-  [[ -f $p ]] && source $p
+for p in /opt/homebrew/opt/fzf-tab/share/fzf-tab/fzf-tab.zsh \
+         /usr/share/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh \
+         "$HOME/.zsh/fzf-tab/fzf-tab.plugin.zsh"; do
+  [[ -f $p ]] && source $p && break
 done
 zstyle ':fzf-tab:*' fzf-flags '--bind=esc:abort'
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --icons --color=always $realpath'
@@ -18,16 +27,23 @@ zstyle ':fzf-tab:complete:*:*' fzf-preview 'bat --color=always --style=numbers -
 
 # fzf key-bindings only (Ctrl+R history, Ctrl+T files, Alt+C dirs)
 # fzf-tab handles tab completion — do not source fzf's completion.zsh
-[ -f /opt/homebrew/opt/fzf/shell/key-bindings.zsh ] && source /opt/homebrew/opt/fzf/shell/key-bindings.zsh
+for p in /opt/homebrew/opt/fzf/shell/key-bindings.zsh \
+         /usr/share/doc/fzf/examples/key-bindings.zsh; do
+  [[ -f $p ]] && source $p && break
+done
 
 # autosuggestions
-for p in /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh; do
-  [[ -f $p ]] && source $p
+for p in /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh \
+         /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh \
+         /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh; do
+  [[ -f $p ]] && source $p && break
 done
 
 # syntax highlighting
-for p in /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh; do
-  [[ -f $p ]] && source $p
+for p in /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh \
+         /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh \
+         /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh; do
+  [[ -f $p ]] && source $p && break
 done
 
 if command -v kubectl >/dev/null; then
