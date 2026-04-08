@@ -5,64 +5,68 @@ DOTFILES_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 LOCAL_BIN="$HOME/.local/bin"
 mkdir -p "$LOCAL_BIN"
 
-# ── apt packages (all sudo usage consolidated here) ──────────────────────────
+# ── system packages (requires sudo — skip when managed by Ansible) ───────────
 
-echo "==> Installing apt packages..."
-sudo apt-get update
-sudo apt-get install -y \
-  zsh \
-  tmux \
-  git \
-  fzf \
-  ripgrep \
-  bat \
-  zoxide \
-  tree \
-  btop \
-  cmatrix \
-  mtr \
-  curl \
-  wget \
-  jq \
-  stow \
-  ansible \
-  zsh-autosuggestions \
-  zsh-syntax-highlighting \
-  python3 \
-  python3-pip \
-  python3-venv \
-  unzip
-
-echo "==> Adding external apt repos..."
-
-# GitHub CLI
-if ! command -v gh >/dev/null; then
-  sudo mkdir -p /etc/apt/keyrings
-  curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg >/dev/null
-  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+if [ "${SKIP_SYSTEM_PACKAGES:-0}" = "1" ]; then
+  echo "==> SKIP_SYSTEM_PACKAGES=1 — skipping apt and system config (managed externally)"
+else
+  echo "==> Installing apt packages..."
   sudo apt-get update
-  sudo apt-get install -y gh
-fi
+  sudo apt-get install -y \
+    zsh \
+    tmux \
+    git \
+    fzf \
+    ripgrep \
+    bat \
+    zoxide \
+    tree \
+    btop \
+    cmatrix \
+    mtr \
+    curl \
+    wget \
+    jq \
+    stow \
+    ansible \
+    zsh-autosuggestions \
+    zsh-syntax-highlighting \
+    python3 \
+    python3-pip \
+    python3-venv \
+    unzip
 
-# eza
-if ! command -v eza >/dev/null; then
-  sudo mkdir -p /etc/apt/keyrings
-  curl -fsSL https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
-  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list >/dev/null
-  sudo apt-get update
-  sudo apt-get install -y eza
-fi
+  echo "==> Adding external apt repos..."
 
-# Node.js (prebuilt via NodeSource)
-if ! command -v node >/dev/null; then
-  curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
-  sudo apt-get install -y nodejs
-fi
+  # GitHub CLI
+  if ! command -v gh >/dev/null; then
+    sudo mkdir -p /etc/apt/keyrings
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg >/dev/null
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+    sudo apt-get update
+    sudo apt-get install -y gh
+  fi
 
-# Set zsh as default shell (last sudo operation)
-if [ "$SHELL" != "$(which zsh)" ]; then
-  echo "==> Setting zsh as default shell..."
-  sudo chsh -s "$(which zsh)" "$USER"
+  # eza
+  if ! command -v eza >/dev/null; then
+    sudo mkdir -p /etc/apt/keyrings
+    curl -fsSL https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list >/dev/null
+    sudo apt-get update
+    sudo apt-get install -y eza
+  fi
+
+  # Node.js (prebuilt via NodeSource)
+  if ! command -v node >/dev/null; then
+    curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+    sudo apt-get install -y nodejs
+  fi
+
+  # Set zsh as default shell (last sudo operation)
+  if [ "$SHELL" != "$(which zsh)" ]; then
+    echo "==> Setting zsh as default shell..."
+    sudo chsh -s "$(which zsh)" "$USER"
+  fi
 fi
 
 # ── user-local installs (no sudo beyond this point) ──────────────────────────
