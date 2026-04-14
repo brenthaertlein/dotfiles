@@ -104,6 +104,11 @@ unzip -qo /tmp/awscliv2.zip -d /tmp
 /tmp/aws/install --install-dir "$HOME/.local/aws-cli" --bin-dir "$LOCAL_BIN" --update
 rm -rf /tmp/aws /tmp/awscliv2.zip
 
+# atuin
+if ! command -v atuin >/dev/null; then
+  curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh -s -- --yes --bin-dir "$LOCAL_BIN"
+fi
+
 # fzf-tab (zsh plugin — no apt package)
 FZF_TAB_DIR="$HOME/.zsh/fzf-tab"
 if [ ! -d "$FZF_TAB_DIR" ]; then

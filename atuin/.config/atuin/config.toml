@@ -1,0 +1,22 @@
+# Atuin — shell history sync & search
+# https://docs.atuin.sh/configuration/config/
+
+## Sync — self-hosted server
+# Update sync_address to your atuin server once it's running.
+# Register: atuin register -u <user> -e <email> -p <password>
+# Login:    atuin login -u <user> -p <password>
+sync_address = "https://atuin.your-homelab.local"
+auto_sync = true
+sync_frequency = "5m"
+
+## Search
+search_mode = "fuzzy"
+filter_mode = "global"
+filter_mode_shell_up_key_binding = "session"
+
+## Shortcuts
+# Use Ctrl+1..9 instead of Alt+1..9 for quick-select (more reliable on macOS)
+ctrl_n_shortcuts = true
+
+## Storage
+db_path = "~/.local/share/atuin/history.db"

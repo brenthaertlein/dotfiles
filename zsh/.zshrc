@@ -25,12 +25,18 @@ zstyle ':fzf-tab:*' fzf-flags '--bind=esc:abort'
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --icons --color=always $realpath'
 zstyle ':fzf-tab:complete:*:*' fzf-preview 'bat --color=always --style=numbers --line-range=:50 $realpath 2>/dev/null || eza -1 --icons --color=always $realpath 2>/dev/null'
 
-# fzf key-bindings only (Ctrl+R history, Ctrl+T files, Alt+C dirs)
+# fzf key-bindings (Ctrl+T files, Alt+C dirs)
 # fzf-tab handles tab completion — do not source fzf's completion.zsh
+# Note: atuin takes over Ctrl+R below; fzf's Ctrl+T and Alt+C still work
 for p in /opt/homebrew/opt/fzf/shell/key-bindings.zsh \
          /usr/share/doc/fzf/examples/key-bindings.zsh; do
   [[ -f $p ]] && source $p && break
 done
+
+# atuin — shell history sync & search (takes over Ctrl+R from fzf)
+if command -v atuin >/dev/null; then
+  eval "$(atuin init zsh)"
+fi
 
 # autosuggestions
 for p in /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh \
