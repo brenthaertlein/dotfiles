@@ -12,6 +12,10 @@ autoload -Uz compinit && compinit
 setopt AUTO_CD CORRECT MENU_COMPLETE INTERACTIVE_COMMENTS NO_BEEP NO_LIST_BEEP
 bindkey -e
 
+# Alt+Backspace / Ctrl+W: treat "/" as a word boundary (path segments, URLs).
+# zsh default is *?_-.[]~=/&;!#$%^(){}<> — "/" glues path segments into one "word".
+WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
+
 eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
 
@@ -57,6 +61,12 @@ if command -v kubectl >/dev/null; then
 fi
 
 alias ls='eza --icons --group-directories-first'
+alias ll='eza -lah --icons --group-directories-first --classify'
+alias la='eza -a --icons --group-directories-first --classify'
+alias l='eza -l --icons --group-directories-first --classify'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
 alias cat='bat'
 alias k='kubectl'
 [ -x /Applications/Tailscale.app/Contents/MacOS/Tailscale ] && alias tailscale='/Applications/Tailscale.app/Contents/MacOS/Tailscale'
